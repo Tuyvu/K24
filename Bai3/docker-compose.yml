@@ -1,0 +1,114 @@
+version: '3.8'
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8000:8000"
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+      # - payment-service
+
+  user-service:
+    build:
+      context: ./user-service
+    ports:
+      - "8001:8001"
+    environment:
+      - DB_HOST=user-db
+      - DB_PORT=3306
+      - DB_NAME=user_db
+      - DB_USER=root
+      - DB_PASSWORD=example
+    depends_on:
+      - user-db
+
+  product-service:
+    build:
+      context: ./product-service
+    ports:
+      - "8002:8002"
+    environment:
+      - DB_HOST=product-db
+      - DB_PORT=3306
+      - DB_NAME=product_db
+      - DB_USER=root
+      - DB_PASSWORD=example
+    depends_on:
+      - product-db
+
+  order-service:
+    build:
+      context: ./order-service
+    ports:
+      - "8003:8003"
+    environment:
+      - DB_HOST=order-db
+      - DB_PORT=3306
+      - DB_NAME=order_db
+      - DB_USER=root
+      - DB_PASSWORD=example
+    depends_on:
+      - order-db
+
+  # payment-service:
+  #   build:
+  #     context: ./payment-service
+  #   ports:
+  #     - "8004:8004"
+  #   environment:
+  #     - DB_HOST=payment-db
+  #     - DB_PORT=3306
+  #     - DB_NAME=payment_db
+  #     - DB_USER=root
+  #     - DB_PASSWORD=example
+  #   depends_on:
+  #     - payment-db
+
+  user-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: user_db
+    volumes:
+      - user-db-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  product-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: product_db
+    volumes:
+      - product-db-data:/var/lib/mysql
+    ports:
+      - "3308:3306"
+
+  order-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: order_db
+    volumes:
+      - order-db-data:/var/lib/mysql
+    ports:
+      - "3309:3306"
+
+  payment-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: payment_db
+    volumes:
+      - payment-db-data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+
+volumes:
+  user-db-data:
+  product-db-data:
+  order-db-data:
+  payment-db-data:
